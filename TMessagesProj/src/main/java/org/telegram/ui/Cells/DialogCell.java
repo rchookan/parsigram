@@ -10,7 +10,9 @@ package org.telegram.ui.Cells;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.RectF;
+import android.graphics.drawable.GradientDrawable;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -19,21 +21,24 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 
-import org.telegram.messenger.AndroidUtilities;
 import org.telegram.PhoneFormat.PhoneFormat;
+import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
+import org.telegram.messenger.BuildConfig;
 import org.telegram.messenger.ChatObject;
-import org.telegram.messenger.LocaleController;
-import org.telegram.messenger.MessageObject;
-import org.telegram.messenger.UserObject;
-import org.telegram.messenger.FileLog;
-import org.telegram.messenger.query.DraftQuery;
-import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.Emoji;
+import org.telegram.messenger.FileLog;
+import org.telegram.messenger.ImageReceiver;
+import org.telegram.messenger.LocaleController;
+import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
-import org.telegram.messenger.ImageReceiver;
+import org.telegram.messenger.UserObject;
+import org.telegram.messenger.query.DraftQuery;
+import org.telegram.tgnet.ConnectionsManager;
+import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Components.AvatarDrawable;
 
@@ -123,6 +128,12 @@ public class DialogCell extends BaseCell {
     private int avatarTop = AndroidUtilities.dp(10);
 
     private boolean isSelected;
+    // Teleh
+    private boolean drawStatus;
+    private GradientDrawable statusBG;
+    private int avatarSize = AndroidUtilities.dp(52);
+    private int avatarLeftMargin = 10;
+
 
     private RectF rect = new RectF();
 
@@ -131,6 +142,12 @@ public class DialogCell extends BaseCell {
 
         Theme.createDialogsResources(context);
         avatarImage.setRoundRadius(AndroidUtilities.dp(26));
+
+        // Teleh
+        statusBG = new GradientDrawable();
+        statusBG.setColor(Color.GRAY);
+        statusBG.setCornerRadius(AndroidUtilities.dp(16));
+        statusBG.setStroke(AndroidUtilities.dp(2), Color.WHITE);
     }
 
     public void setDialog(TLRPC.TL_dialog dialog, int i, int type) {
@@ -210,6 +227,9 @@ public class DialogCell extends BaseCell {
         drawNameLock = false;
         drawNameBot = false;
         drawVerified = false;
+
+        //Teleh
+        drawStatus = false;
 
         if (customDialog != null) {
             if (customDialog.type == 2) {
@@ -554,6 +574,7 @@ public class DialogCell extends BaseCell {
                 if (encryptedChat != null) {
                     currentNamePaint = Theme.dialogs_nameEncryptedPaint;
                 }
+                if (!drawNameBot) drawStatus = true;
             }
             if (nameString.length() == 0) {
                 nameString = LocaleController.getString("HiddenName", R.string.HiddenName);
@@ -768,6 +789,20 @@ public class DialogCell extends BaseCell {
             return MessagesController.getInstance().dialogsServerOnly;
         }  else if (dialogsType == 2) {
             return MessagesController.getInstance().dialogsGroupsOnly;
+        } else if (dialogsType == 3) {
+            return MessagesController.getInstance().dialogsChannels;
+        } else if (dialogsType == 4) {
+            return MessagesController.getInstance().dialogsGroups;
+        } else if (dialogsType == 5) {
+            return MessagesController.getInstance().dialogsBots;
+        } else if (dialogsType == 6) {
+            return MessagesController.getInstance().dialogsUsers;
+        } else if (dialogsType == 7) {
+            return MessagesController.getInstance().dialogsMegaGroups;
+        } else if (dialogsType == 8) {
+            return MessagesController.getInstance().dialogsFavs;
+        } else if (dialogsType == 9) {
+            return MessagesController.getInstance().dialogsGroupsAll;
         }
         return null;
     }
@@ -776,7 +811,14 @@ public class DialogCell extends BaseCell {
         if (index < getDialogsArray().size()) {
             TLRPC.TL_dialog dialog = getDialogsArray().get(index);
             TLRPC.DraftMessage newDraftMessage = DraftQuery.getDraft(currentDialogId);
-            MessageObject newMessageObject = MessagesController.getInstance().dialogMessage.get(dialog.id);
+            MessageObject newMessageObject = null;
+            if (ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", 0).contains("hide_" + String.valueOf(currentDialogId))) {
+                message = null;
+                newMessageObject = null;
+
+            } else {
+                newMessageObject = MessagesController.getInstance().dialogMessage.get(dialog.id);
+            }
             if (currentDialogId != dialog.id ||
                     message != null && message.getId() != dialog.top_message ||
                     newMessageObject != null && newMessageObject.messageOwner.edit_date != currentEditDate ||
@@ -798,11 +840,16 @@ public class DialogCell extends BaseCell {
             dialogMuted = customDialog.muted;
             avatarDrawable.setInfo(customDialog.id, customDialog.name, null, false);
             avatarImage.setImage(null, "50_50", avatarDrawable, null, false);
+
         } else {
             if (isDialogCell) {
                 TLRPC.TL_dialog dialog = MessagesController.getInstance().dialogs_dict.get(currentDialogId);
                 if (dialog != null && mask == 0) {
-                    message = MessagesController.getInstance().dialogMessage.get(dialog.id);
+                    if (ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", 0).contains("hide_" + String.valueOf(currentDialogId))) {
+                        message = null;
+                    } else {
+                        message = MessagesController.getInstance().dialogMessage.get(dialog.id);
+                    }
                     lastUnreadState = message != null && message.isUnread();
                     unreadCount = dialog.unread_count;
                     currentEditDate = message != null ? message.messageOwner.edit_date : 0;
@@ -906,11 +953,15 @@ public class DialogCell extends BaseCell {
                     photo = user.photo.photo_small;
                 }
                 avatarDrawable.setInfo(user);
+                // Teleh
+                setStatusColor();
             } else if (chat != null) {
                 if (chat.photo != null) {
                     photo = chat.photo.photo_small;
                 }
                 avatarDrawable.setInfo(chat);
+                // Teleh
+               // setStatusColor();
             }
             avatarImage.setImage(photo, "50_50", avatarDrawable, null, false);
         }
@@ -942,6 +993,7 @@ public class DialogCell extends BaseCell {
         } else if (drawNameGroup) {
             setDrawableBounds(Theme.dialogs_groupDrawable, nameLockLeft, nameLockTop);
             Theme.dialogs_groupDrawable.draw(canvas);
+
         } else if (drawNameBroadcast) {
             setDrawableBounds(Theme.dialogs_broadcastDrawable, nameLockLeft, nameLockTop);
             Theme.dialogs_broadcastDrawable.draw(canvas);
@@ -1027,8 +1079,30 @@ public class DialogCell extends BaseCell {
         }
 
         avatarImage.draw(canvas);
-    }
+        // Teleh
 
+        if (drawStatus) {
+            setDrawableBounds(statusBG, AndroidUtilities.dp(36) + avatarLeftMargin, AndroidUtilities.dp(46), AndroidUtilities.dp(16), AndroidUtilities.dp(16));
+            statusBG.draw(canvas);
+        }
+    }
+    // Teleh
+    private void setStatusColor() {
+        String s = user != null ? LocaleController.formatUserStatus(user) : BuildConfig.FLAVOR;
+        if (s.equals(LocaleController.getString("ALongTimeAgo", R.string.ALongTimeAgo))) {
+            statusBG.setColor(0xff000000);
+        } else if (s.equals(LocaleController.getString("Online", R.string.Online))) {
+            statusBG.setColor(0xff00e676);
+        } else if (s.equals(LocaleController.getString("Lately", R.string.Lately))) {
+            statusBG.setColor(0xffcccccc);
+        } else {
+            statusBG.setColor(0xff888888);
+        }
+        int l = (user == null || user.status == null) ? -2 : ConnectionsManager.getInstance().getCurrentTime() - user.status.expires;
+        if (l > 0 && l < 86400) {
+            statusBG.setColor(0xffcccccc);
+        }
+    }
     @Override
     public boolean hasOverlappingRendering() {
         return false;

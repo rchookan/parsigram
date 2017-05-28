@@ -29,6 +29,7 @@ import android.util.Base64;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import org.telegram.SQLite.DatabaseHandler;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.SerializedData;
 import org.telegram.tgnet.TLRPC;
@@ -41,6 +42,7 @@ public class ApplicationLoader extends Application {
 
     @SuppressLint("StaticFieldLeak")
     public static volatile Context applicationContext;
+    public static volatile DatabaseHandler databaseHandler;
     public static volatile Handler applicationHandler;
     private static volatile boolean applicationInited = false;
 
@@ -107,7 +109,7 @@ public class ApplicationLoader extends Application {
         } catch (Exception e) {
             FileLog.e(e);
         }
-        return new File("/data/data/org.telegram.messenger/files");
+        return new File("/data/data/com.tellgram/files");
     }
 
     public static void postInitApplication() {
@@ -203,6 +205,7 @@ public class ApplicationLoader extends Application {
         new ForegroundDetector(this);
 
         applicationHandler = new Handler(applicationContext.getMainLooper());
+        databaseHandler = new DatabaseHandler(applicationContext);
 
         startPushService();
     }

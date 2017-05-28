@@ -18,6 +18,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -124,6 +125,20 @@ public class AndroidUtilities {
     private static Paint roundPaint;
     private static RectF bitmapRect;
 
+
+    public static final String THEME_PREFS = "theme";
+    public static final int THEME_PREFS_MODE = Activity.MODE_PRIVATE;
+    public static final int defColor = 0xff52759c;
+
+    public static int getIntAlphaColor(String key, int def, float factor){
+        SharedPreferences themePrefs = ApplicationLoader.applicationContext.getSharedPreferences(THEME_PREFS, THEME_PREFS_MODE);
+        int color = themePrefs.getInt(key, def);
+        int alpha = Math.round(Color.alpha(color) * factor);
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        return Color.argb(alpha, red, green, blue);
+    }
     public static Pattern WEB_URL = null;
     static {
         try {

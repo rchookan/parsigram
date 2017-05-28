@@ -1,0 +1,45 @@
+{
+  "project_info": {
+    "project_number": "265898518676",
+    "firebase_url": "https://tellgram.firebaseio.com",
+    "project_id": "telestar",
+    "storage_bucket": "tellgram.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:265898518676:android:2e379c05cec4a890",
+        "android_client_info": {
+          "package_name": "com.tellgram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "265898518676-97m2u2im2u91smjc85enu23gntt34du6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7b049FAh_aA4n2P0qOm6iQ92YW-pdsCg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-79407256-1"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -13,6 +13,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -26,6 +27,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
+import org.telegram.messenger.R;
 import org.telegram.ui.Components.LayoutHelper;
 
 import java.util.ArrayList;
@@ -67,9 +70,33 @@ public class ActionBar extends FrameLayout {
     private boolean isBackOverlayVisible;
     protected BaseFragment parentFragment;
     public ActionBarMenuOnItemClick actionBarMenuOnItemClick;
+// Teleh
 
+    private ImageView ghostView;
+
+    public void changeGhostModeVisibility() {
+        ImageView img = this.ghostView;
+        SharedPreferences var5 = ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", 0);
+
+        if(var5.getBoolean("ghost_mode", false)==true&& var5.getBoolean("show_ghost_state_icon", true)==true) {
+            img.setVisibility(VISIBLE);
+        } else {
+            img.setVisibility(GONE);
+        }
+
+    }
+    public void createGhostModeImage() {
+        this.ghostView = new ImageView(this.getContext());
+        this.ghostView.setImageResource(R.drawable.ic_teleh_seen);
+        this.ghostView.setPadding(20, 20, 20, 20);
+        this.addView(this.ghostView, 0, LayoutHelper.createFrame(-2, -2, 17));
+    }
+    // Teleh
     public ActionBar(Context context) {
         super(context);
+        // Teleh
+        createGhostModeImage();
+        changeGhostModeVisibility();
     }
 
     private void createBackButtonImage() {

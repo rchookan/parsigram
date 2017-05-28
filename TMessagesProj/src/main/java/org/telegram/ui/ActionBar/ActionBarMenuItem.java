@@ -12,6 +12,7 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -405,6 +406,10 @@ public class ActionBarMenuItem extends FrameLayout {
 
     public void setIcon(int resId) {
         iconView.setImageResource(resId);
+    }
+    //Teleh
+    public void setIcon(Drawable drawable) {
+        iconView.setImageDrawable(drawable);
     }
 
     public ImageView getImageView() {
