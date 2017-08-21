@@ -27,7 +27,7 @@ android {
     buildToolsVersion '25.0.2'
 
     useLibrary 'org.apache.http.legacy'
-    defaultConfig.applicationId = "com.tellgram"
+    defaultConfig.applicationId = "com.parsigram"
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
