@@ -505,7 +505,7 @@
     <!--contacts view-->
     <string name="SelectContact">Select Contact</string>
     <string name="NoContacts">No contacts yet</string>
-    <string name="InviteText">تل گرام را از کافه بازار دانلود کنید: https://cafebazaar.ir/app/com.Tellgram/?l=fa</string>
+    <string name="InviteText"> پارسی گرام را از کافه بازار دانلود کنید: https://cafebazaar.ir/app/com.parsigram/?l=fa</string>
     <string name="TodayAt">at</string>
     <string name="YesterdayAt">yesterday at</string>
     <string name="Online">online</string>
