@@ -1990,7 +1990,7 @@ Please select the next one"</string>
     <string name="RowGradientBLTR">Bottom-Left Top-Right</string>
     <string name="RowGradientList">Apply gradient to list background</string>
     <string name="Copied">%s copied to clipboard</string>
-    <string name="JoinChannel">\n\nJoin Tell gram official channel: https://telegram.me/iTellgram</string>
+    <string name="JoinChannel">\n\nJoin Parsigram official channel: https://telegram.me/app_parsigram</string>
     <string name="DownloadThemes">Download themes</string>
     <string name="OfficialChannel">Official channel</string>
     <string name="DialogsSettings">Dialogs</string>
