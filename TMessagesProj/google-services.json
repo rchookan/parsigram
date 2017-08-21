@@ -1,16 +1,16 @@
 {
   "project_info": {
-    "project_number": "265898518676",
-    "firebase_url": "https://tellgram.firebaseio.com",
-    "project_id": "telestar",
-    "storage_bucket": "tellgram.appspot.com"
+    "project_number": "2658985186769",
+    "firebase_url": "https://parsigram.firebaseio.com",
+    "project_id": "parsigram",
+    "storage_bucket": "parsigram.appspot.com"
   },
   "client": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:265898518676:android:2e379c05cec4a890",
         "android_client_info": {
-          "package_name": "com.tellgram"
+          "package_name": "com.parsigram"
         }
       },
       "oauth_client": [
